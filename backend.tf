@@ -1,4 +1,4 @@
-resource "kubernetes_pod" "nginx" {
+resource "kubernetes_pod" "" {
   metadata {
     name = "nginx-example"
     labels = {

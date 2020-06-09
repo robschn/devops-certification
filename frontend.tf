@@ -1,8 +1,8 @@
-resource "kubernetes_pod" "nginx" {
+resource "kubernetes_pod" "frontend" {
   metadata {
-    name = "nginx-example"
+    name = "frontend-server"
     labels = {
-      App = "nginx"
+      App = "front-server"
     }
   }
 
