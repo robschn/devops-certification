@@ -1,0 +1,4 @@
+docker run -p 8080:8080 -e SERVER='http://localhost:8082' --network
+="host" frontend:v1.0.0
+
+docker run -p 8082:8082 backend:v1.0.0
