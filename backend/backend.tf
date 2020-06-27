@@ -7,25 +7,29 @@ resource "kubernetes_deployment" "backend" {
   }
 
   spec {
-    replicas = 2
+    replicas = 1
     selector {
       match_labels = {
-        App = "Backend"
+        App = "backend"
       }
     }
     template {
       metadata {
         labels = {
-          App = "Backend"
+          App = "backend"
         }
       }
       spec {
         container {
           image = "gcr.io/devops-certification-279819/backend:v1.0"
           name  = "backend"
-
+          env {
+              name = "PORT"
+              value = "8080"
+          }
           port {
-            container_port = 8082
+            container_port = 8080
+            name = "frontend-port"
           }
 
           resources {
@@ -42,4 +46,21 @@ resource "kubernetes_deployment" "backend" {
       }
     }
   }
+}
+
+resource "kubernetes_service" "ClusterIP"{
+    metadata {
+        name = "backend-service"
+    }
+    spec {
+        selector = {
+            App = kubernetes_deployment.backend.spec.0.template.0.metadata[0].labels.App
+        }
+        port {
+            port = "80"
+            protocol = "TCP"
+            target_port = "8082"
+        }
+        type = "ClusterIP"
+    }
 }
