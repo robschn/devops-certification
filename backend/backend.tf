@@ -21,7 +21,7 @@ resource "kubernetes_deployment" "backend" {
       }
       spec {
         container {
-          image = "gcr.io/devops-certification-279819/backend:v1.0"
+          image = "gcr.io/devops-certification-279819/backend"
           name  = "backend"
           env {
               name = "PORT"
