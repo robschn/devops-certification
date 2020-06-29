@@ -1,3 +1,7 @@
+# start jenkins server
+docker run -p 80:8080 -v /home/robmschn/jenkins:/var/jenkins_home -d drehnstrom/jenkins-gcp:v0.2
+docker logs CONTAINER
+
 docker run -d -p 8080:8080 -e SERVER='http://localhost:8082' --network="host" frontend:v1.0
 docker run -d -p 8082:8082 backend:v1.0
 
