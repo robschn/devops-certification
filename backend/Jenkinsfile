@@ -2,9 +2,11 @@ pipeline {
    agent any
 
    stages {
-      stage('Hello') {
+      stage('Check Versions') {
          steps {
-            echo 'Hello World with even smaller change'
+            sh 'gcloud --version'
+            sh 'docker --version'
+            sh 'nodejs --version'
          }
       }
    }
