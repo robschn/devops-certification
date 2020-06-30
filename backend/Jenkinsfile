@@ -2,6 +2,11 @@ pipeline {
    agent any
 
    stages {
+      stage('Remove Old Build') {
+          steps {
+              sh 'rm -rf *'
+          }
+      }
       stage('Check Versions') {
          steps {
             sh 'gcloud --version'
@@ -9,5 +14,11 @@ pipeline {
             sh 'nodejs --version'
          }
       }
+      stage('Clone Repo') {
+          steps {
+              sh 'git clone https://github.com/robschn/devops-certification.git'
+              sh 'ls'
+          }
+      } 
    }
 }
