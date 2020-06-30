@@ -37,7 +37,7 @@ pipeline {
             dir('./devops-certification/backend') {
                 sh 'terraform init'
                 sh 'gcloud container clusters get-credentials cluster1 --zone us-east1-c'
-                sh 'TF_VAR_BUILD=${BUILD_NUMBER} terraform apply -auto_approve'
+                sh 'TF_VAR_BUILD=${BUILD_NUMBER} terraform apply -auto-approve'
             }
         }
     }
