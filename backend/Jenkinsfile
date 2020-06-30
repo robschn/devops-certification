@@ -17,6 +17,13 @@ pipeline {
               }
           }
       }
+      stage('SonarCube Test') {
+          steps {
+              dir('./devops-certification/backend') {
+                  sh '/home/robmschn/sonar-scanner/bin/sonar-scanner -Dsonar.projectKey=deploy-backend -Dsonar.sources=. -Dsonar.host.url=http://34.73.170.34:9000 -Dsonar.login=f8434a7d351c5af7251341f089f035d4bda9465a'
+              }
+          }
+      }
       stage('NPM Test') {
           steps {
             dir('./devops-certification/backend') {
