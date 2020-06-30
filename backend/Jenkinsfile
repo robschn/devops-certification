@@ -17,21 +17,22 @@ pipeline {
       stage('Clone Repo') {
           steps {
               sh 'git clone https://github.com/robschn/devops-certification.git'
-              sh 'ls'
           }
       }
-    stage('Install dependencies') {
-        dir('./devops-certification/backend')
+    stage('NPM Test') {
           steps {
-            sh 'pwd'
-            sh 'npm install'
-            sh 'npm test'
+            dir('./devops-certification/backend') {
+                sh 'npm install'
+                sh 'npm test'
+            }
           }
     }
-    stage('Test') {
-      steps {
-         sh 'npm test'
-      }
+    stage('Build and Submit') {
+        steps {
+            dir('./devops-certification/backend') {
+                sh 'gcloud builds submit -t gcr.io/devops-certification-279819/backend:v1.${BUILD_NUMBER} .'
+            }
+        }
     }
    }
 }
