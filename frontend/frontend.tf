@@ -1,3 +1,5 @@
+variable "BUILD" {}
+
 resource "kubernetes_deployment" "frontend" {
   metadata {
     name = "frontend"
@@ -21,7 +23,7 @@ resource "kubernetes_deployment" "frontend" {
       }
       spec {
         container {
-          image = "gcr.io/devops-certification-279819/frontend:v1.0"
+          image = "gcr.io/devops-certification-279819/frontend:v1.${var.BUILD}"
           name  = "frontend"
           env {
               name = "PORT"
