@@ -20,4 +20,4 @@ docker push gcr.io/${PROJECT_ID}/frontend
 gcloud container clusters get-credentials cluster1 --zone us-east1-c
 kubectl config current-context
 
-# small change
+# change
