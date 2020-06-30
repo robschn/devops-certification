@@ -2,47 +2,49 @@ pipeline {
    agent any
 
    stages {
-      stage('Remove Old Build') {
-          steps {
-              sh 'rm -rf *'
-          }
-      }
-      stage('Check Versions') {
-         steps {
-            sh 'gcloud --version'
-            sh 'docker --version'
-            sh 'nodejs --version'
-            sh 'terraform --version'
+      dir('./devops-certification/backend') {
+         stage('Remove Old Build') {
+             steps {
+                 sh 'rm -rf *'
+             }
          }
+         stage('Check Versions') {
+            steps {
+               sh 'gcloud --version'
+               sh 'docker --version'
+               sh 'nodejs --version'
+               sh 'terraform --version'
+            }
+         }
+         stage('Clone Repo') {
+             steps {
+                 sh 'git clone https://github.com/robschn/devops-certification.git'
+             }
+         }
+       stage('NPM Test') {
+             steps {
+               dir('./devops-certification/backend') {
+                   sh 'npm install'
+                   sh 'npm test'
+               }
+             }
+       }
+       stage('Build and Submit') {
+           steps {
+               dir('./devops-certification/backend') {
+                   sh 'gcloud builds submit -t gcr.io/devops-certification-279819/backend:v1.${BUILD_NUMBER} .'
+               }
+           }
+       }
+       stage('Deploy to Kubernetes') {
+           steps {
+               dir('./devops-certification/backend') {
+                   sh 'terraform init'
+                   sh 'gcloud container clusters get-credentials cluster1 --zone us-east1-c'
+                   sh 'TF_VAR_BUILD=${BUILD_NUMBER} terraform apply'
+               }
+           }
       }
-      stage('Clone Repo') {
-          steps {
-              sh 'git clone https://github.com/robschn/devops-certification.git'
-          }
-      }
-    stage('NPM Test') {
-          steps {
-            dir('./devops-certification/backend') {
-                sh 'npm install'
-                sh 'npm test'
-            }
-          }
     }
-    stage('Build and Submit') {
-        steps {
-            dir('./devops-certification/backend') {
-                sh 'gcloud builds submit -t gcr.io/devops-certification-279819/backend:v1.${BUILD_NUMBER} .'
-            }
-        }
-    }
-    stage('Deploy to Kubernetes') {
-        steps {
-            dir('./devops-certification/backend') {
-                sh 'terraform init'
-                sh 'gcloud container clusters get-credentials cluster1 --zone us-east1-c'
-                sh 'TF_VAR_BUILD=${BUILD_NUMBER} terraform apply'
-            }
-        }
-    }
-   }
+  }
 }
