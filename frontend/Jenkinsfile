@@ -1,0 +1,45 @@
+pipeline {
+   agent any
+
+   stages {
+      stage('Check Versions') {
+         steps {
+            sh 'gcloud --version'
+            sh 'docker --version'
+            sh 'nodejs --version'
+            sh 'terraform --version'
+         }
+      }
+      stage('Pull Repo') {
+           steps {
+              dir('./devops-certification/frontend') {
+                  sh 'git pull'
+              }
+          }
+      }
+      stage('NPM Test') {
+          steps {
+            dir('./devops-certification/frontend') {
+                sh 'npm install'
+                sh 'npm test'
+            }
+          }
+    }
+      stage('Build and Submit') {
+        steps {
+            dir('./devops-certification/frontend') {
+                sh 'gcloud builds submit -t gcr.io/devops-certification-279819/frontend:v1.${BUILD_NUMBER} .'
+            }
+        }
+    }
+      stage('Deploy to Kubernetes') {
+        steps {
+            dir('./devops-certification/frontend') {
+                sh 'terraform init'
+                sh 'gcloud container clusters get-credentials cluster1 --zone us-east1-c'
+                sh 'TF_VAR_BUILD=${BUILD_NUMBER} terraform apply -auto-approve'
+            }
+        }
+    }
+   }
+}
