@@ -9,7 +9,7 @@ resource "kubernetes_deployment" "frontend" {
   }
 
   spec {
-    replicas = 3
+    replicas = 2
     selector {
       match_labels = {
         App = "frontend"
